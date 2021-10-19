@@ -15,7 +15,8 @@ export default function App() {
   const [Destino, setDestino] = useState("Seleccione");
   const [Nropersonas, setNropersonas] = useState("");
   const [Nrodias, setNrodias] = useState("");
-  const [Adicionales, setAdicionales] = useState("");
+  const [Adicionales1, setAdicionales1] = useState("");
+  const [Adicionales2, setAdicionales2] = useState("");
   const [Total, setTotal] = useState("");
 
   const calcTotal = () => {
@@ -55,10 +56,10 @@ export default function App() {
       setTotal(total);
     }
 
-    if ((Adicionales = Barco)) {
+    if ((Adicionales1 = Barco)) {
       total = Destino * 100000;
     } else {
-      if ((Adicionales = Discoteca)) {
+      if ((Adicionales2 = Discoteca)) {
         total = Destino * 120000;
       }
     }
@@ -130,18 +131,18 @@ export default function App() {
         <Text>Adicionales:</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           <CheckBox
-            value={Adicionales}
-            itemvalue={Barco}
-            onValueChange={setAdicionales}
+            value={Adicionales1}
+            //itemvalue={Barco}
+            onValueChange={setAdicionales1}
             style={{ alignSelf: "center" }}
           ></CheckBox>
           <Text> Barco</Text>
         </View>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           <CheckBox
-            value={Adicionales}
-            itemValue={Discoteca}
-            onValueChange={setAdicionales}
+            value={Adicionales2}
+            //itemValue={Discoteca}
+            onValueChange={setAdicionales2}
             style={{ alignSelf: "center" }}
           ></CheckBox>
           <Text> Discoteca</Text>
