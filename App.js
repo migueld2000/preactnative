@@ -1,69 +1,85 @@
-import { StatusBar } from "expo-status-bar";
-import React, { Component, useState, Fragment } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  Picker,
-  CheckBox,
-  Button,
-} from "react-native";
+import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Button, Picker, CheckBox, Image } from 'react-native';
 
 export default function App() {
-  const [Destino, setDestino] = useState("Seleccione");
-  const [Nropersonas, setNropersonas] = useState("");
-  const [Nrodias, setNrodias] = useState("");
-  const [Adicionales1, setAdicionales1] = useState("");
-  const [Adicionales2, setAdicionales2] = useState("");
-  const [Total, setTotal] = useState("");
+  const [identificacion, setIdentificacion] = useState('');
+  const [nombre, setNombre] = useState('');
+  const [destino, setDestino] = useState("");
+  const [nroPersonas, setNroPersonas] = useState("");
+  const [nroDias, setNroDias] = useState('');
+  const [barco, setBarco] = useState(false);
+  const [discoteca, setDiscoteca] = useState(false);
+  const [totalPago, setTotalPagar] = useState("");
+  const [error, setError] = useState();
 
-  const calcTotal = () => {
-    if (Nrodias != "" && Nropersonas != "") {
-      let total = 0;
-      switch (Destino) {
-        case "cartajena": {
-          if (Nropersonas > 10) {
-            total = 300000 * Nrodias * 270000;
-          } else {
-            total = 300000 * Nrodias;
-          }
-          break;
-        }
-        case "santa_marta": {
-          if (Nropersonas > 10) {
-            total = 250000 * Nrodias * 225000;
-          } else {
-            total = 225000 * Nrodias;
-          }
-          break;
-        }
-        case "san_andres": {
-          if (Nropersonas > 10) {
-            total = 200000 * Nrodias * 180000;
-          } else {
-            total = 200000 * Nrodias;
-          }
-          break;
-        }
-        case "c":
-          mresultado = 0;
-          setValor1("");
-          setValor2("");
-          break;
-      }
-      setTotal(total);
-    }
+  let personasViaje = parseInt(nroPersonas);
+  let diasViaje = parseInt(nroDias);
+  let costoAdicional = 0;
+  let total;
+  let descuento = false;
 
-    if ((Adicionales1 = Barco)) {
-      total = Destino * 100000;
+  const viaje = () => {
+    if (identificacion == '') {
+      setError('Digite Identifiacion')
+    } else if (nombre == '') {
+      setError('Digite un Nombre')
+    } else if (destino == '') {
+      setError('Debe seleccionar un destino')
+    } else if (nroPersonas == '') {
+      setError('el numero de personas debe de ser mayor a 0')
+    } else if (nroDias == '') {
+      setError('el numero de Dias debe de ser mayor a 0')
     } else {
-      if ((Adicionales2 = Discoteca)) {
-        total = Destino * 120000;
+
+      if (barco) {
+        costoAdicional += 100000;
+      }
+
+      if (discoteca) {
+        costoAdicional += 120000;
+      }
+
+      if (personasViaje >= 10) {
+        descuento = true;
+      }
+
+      switch (destino) {
+        case 'ca':
+          total = ((300000 * personasViaje) * diasViaje) + (costoAdicional * personasViaje);
+          setTotalPagar((descuento) ? total - (total * 0.10) : total);
+          setError('')
+          costoAdicional = 0;
+          break;
+
+        case 'sm':
+          total = ((250000 * personasViaje) * diasViaje) + (costoAdicional * personasViaje);
+          setTotalPagar((descuento) ? total - (total * 0.10) : total);
+          setError('')
+          costoAdicional = 0;
+          break;
+
+        case 'sa':
+          total = ((200000 * personasViaje) * diasViaje) + (costoAdicional * personasViaje);
+          setTotalPagar((descuento) ? total - (total * 0.10) : total);
+          setError('')
+          costoAdicional = 0;
+          break;
       }
     }
   };
+
+  const limpiar = () => {
+    setIdentificacion("");
+    setBarco("");
+    setDestino("");
+    setDiscoteca('');
+    setError('');
+    setTotalPagar('');
+    setNombre('');
+    setNroDias('');
+    setNroPersonas('')
+  }
 
   return (
     <View style={styles.container}>
@@ -77,94 +93,82 @@ export default function App() {
       </View>
       <Text>{"\n"}</Text>
       <View>
-        <Text>
-          Identificacion:{" "}
-          <TextInput style={{ borderBottomWidth: 1 }} placeholder="" />
-        </Text>
-      </View>
-      <Text>{"\n"}</Text>
-      <View>
-        <Text>
-          Nombre: <TextInput style={{ borderBottomWidth: 1 }} placeholder="" />
-        </Text>
-      </View>
-      <Text>{"\n"}</Text>
-      <View>
-        <Text>
-          Destino:
+        <View>
+          <Text>Identificación: </Text>
+          <TextInput style={styles.inputs}style={{ borderBottomWidth: 1 }} onChangeText={setIdentificacion} value={identificacion}></TextInput>
+        </View>
+        <Text>{"\n"}</Text>
+        <View>
+          <Text>Nombre: </Text>
+          <TextInput style={styles.inputs} style={{ borderBottomWidth: 1 }} onChangeText={setNombre} value={nombre}></TextInput>
+        </View>
+        <Text>{"\n"}</Text>
+        <View>
+          <Text>Destino</Text>
           <Picker
-            selectedValue={Destino}
+            selectedValue={destino}
             style={{ height: 35, width: 180, borderColor: "white" }}
             onValueChange={(itemValue, itemIndex) => setDestino(itemValue)}
           >
-            <Picker.Item label="Seleccione tu detino" value="Seleccione" />
-            <Picker.Item label="Cartajena" value="cartajena" />
-            <Picker.Item label="Santa marta" value="santa_marta" />
-            <Picker.Item label="San Andres" value="san_andres" />
+            <Picker.Item label="Selecciona viaje" value="" />
+            <Picker.Item label="Cartagena" value="ca" />
+            <Picker.Item label="Santa Marta" value="sm" />
+            <Picker.Item label="San Andres" value="sa" />
           </Picker>
-        </Text>
-      </View>
-      <Text>{"\n"}</Text>
-      <View>
-        <Text>
-          Numero de personas:
-          <TextInput
-            style={{ borderBottomWidth: 1 }}
-            onChangeText={(Nropersonas) => setNropersonas(Nropersonas)}
-            value={Nropersonas}
-          />
-        </Text>
-      </View>
-      <Text>{"\n"}</Text>
-      <View>
-        <Text>
-          Numero de dias:
-          <TextInput
-            style={{ borderBottomWidth: 1 }}
-            onChangeText={(Nrodias) => setNrodias(Nrodias)}
-            value={Nrodias}
-          />
-        </Text>
-      </View>
-      <Text>{"\n"}</Text>
-      <View>
+        </View>
+        <Text>{"\n"}</Text>
+        <View>
+          <Text>personas: </Text>
+          <TextInput style={styles.inputs} style={{ borderBottomWidth: 1 }} onChangeText={setNroPersonas} value={nroPersonas}></TextInput>
+        </View>
+        <Text>{"\n"}</Text>
+        <View>
+          <Text>dias: </Text>
+          <TextInput style={styles.inputs} style={{ borderBottomWidth: 1 }} onChangeText={setNroDias} value={nroDias}></TextInput>
+        </View>
+        <Text>{"\n"}</Text>
+        <View>
         <Text>Adicionales:</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           <CheckBox
-            value={Adicionales1}
-            //itemvalue={Barco}
-            onValueChange={setAdicionales1}
+            value={barco}
+            onValueChange={setBarco}
             style={{ alignSelf: "center" }}
           ></CheckBox>
           <Text> Barco</Text>
         </View>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           <CheckBox
-            value={Adicionales2}
-            //itemValue={Discoteca}
-            onValueChange={setAdicionales2}
+            value={discoteca}
+            onValueChange={setDiscoteca}
             style={{ alignSelf: "center" }}
           ></CheckBox>
           <Text> Discoteca</Text>
         </View>
       </View>
-      <View>
-        <Text>
-          Total:
-          <TextInput style={{ borderBottomWidth: 1 }} value={Total} />
-        </Text>
+      <Text>{"\n"}</Text>
+        <View>
+          <Text>Tota a pagar: 
+          <TextInput style={{ borderBottomWidth: 1 }} value={totalPago}></TextInput>
+          </Text>
+        </View>
+
       </View>
+      <Text style={{ color: 'red' }}>{error}</Text>
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10 }}>
-        <Button title="Calcular" onPress={() => calcTotal()} />
+        <Button 
+        title="Calcular" 
+        onPress={viaje} />
       </View>
+      <Text>{"\n"}</Text>
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <Button
           title="Limpiar"
-          onPress={() => calcTotal("c")}
-          style={{ marginLeft: 100 }}
+          onPress={limpiar}
         />
       </View>
+      <StatusBar style="auto" />
     </View>
   );
 }
